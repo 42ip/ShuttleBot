@@ -1,6 +1,13 @@
 import discord
 import json,sys,os,random
+import requests
+configs = {}
+with open(sys.path[0] + '/config.json', 'r+') as openfile:
+    json_object = json.load(openfile)
+    configs = json_object
+apiKey = configs['apiKey']
 class MyClient(discord.Client):
+    global apiKey
     async def on_ready(self):
         print('Logged in as')
         print(self.user.name)
@@ -13,10 +20,14 @@ class MyClient(discord.Client):
     
         if message.content.startswith('>hello'):
             await message.reply(random.choice(self.possibleIntros), mention_author=True)
-configs = {}
-with open(sys.path[0] + '/config.json', 'r+') as openfile:
-    json_object = json.load(openfile)
-    configs = json_object
+        if message.content.startswith('>apod'):
+            chan = message.channel
+            response = requests.get('https://api.nasa.gov/planetary/apod?api_key={}'.format(apiKey))
+            if response.status_code == 200:
+                vals = response.json()
+                await chan.send("Today's Title is: " + vals['title'])
+                await chan.send(vals['url'])
+
 
 client = MyClient()
 client.run(configs['token'])
