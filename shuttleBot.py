@@ -4,6 +4,28 @@ import random
 import requests
 import io
 from PIL import Image, ImageDraw
+import gpt_2_simple as gpt2
+import tarfile
+import gdown
+import sys
+
+
+url = 'https://drive.google.com/uc?id=1EVvLwJA1f507iF1fteBOZaJUK6CbBvl-'
+output = 'checkpoint_run1.tar'
+gdown.download(url, output, quiet=False)
+files = os.listdir()
+print(files)
+
+
+file_path = 'checkpoint_run1.tar'
+
+
+with tarfile.open(file_path, 'r') as tar:
+    tar.extractall()
+sess = gpt2.start_tf_sess()
+gpt2.load_gpt2(sess, run_name='run1')
+
+print('ALL DONE')
 
 apiKey = os.environ.get('apiKey')
 token = os.environ.get('token')
@@ -51,6 +73,18 @@ class MyClient(discord.Client):
                 vals = response.json()
                 await chan.send("Today's Title is: " + vals['title'])
                 await chan.send(vals['url'])
+
+        if message.content.startswith('>plot'):
+            print('Yelp')
+            chan = message.channel
+            await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
+            text = gpt2.generate(sess, run_name='run1',
+             length=50,
+             prefix="<|startoftext|>",
+             truncate="<|endoftext|>\n",
+             include_prefix=False,return_as_list = True)
+            print(text[0])
+            await chan.send(text[0])
 
         if message.content.startswith('>earth'):
             if len(message.mentions) == 0:
