@@ -28,7 +28,16 @@ class MyClient(discord.Client):
         if message.content.startswith('>hello'):
             await message.reply(random.choice(self.possibleIntros), mention_author=True)
 
-
+        if message.content.startswith('>mars'):
+            chan = message.channel
+            num = random.randint(1,3250)
+            response = requests.get('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera=navcam&api_key={}'.format(str(num),apiKey))
+            if response.status_code == 200:
+                vals = response.json()
+                arr = vals['photos']
+                photo = random.choice(arr)
+                await chan.send("Here's a picture from the red planet near us")
+                await chan.send(photo['img_src'])
 
         if message.content.startswith('>apod'):
             chan = message.channel
