@@ -30,14 +30,17 @@ class MyClient(discord.Client):
 
         if message.content.startswith('>mars'):
             chan = message.channel
-            num = random.randint(1,3250)
-            response = requests.get('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera=navcam&api_key={}'.format(str(num),apiKey))
-            if response.status_code == 200:
-                vals = response.json()
-                arr = vals['photos']
-                photo = random.choice(arr)
-                await chan.send("Here's a picture from the red planet near us")
-                await chan.send(photo['img_src'])
+            arr = []
+            while arr == []:
+                num = random.randint(1,3250)
+                response = requests.get('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera=navcam&api_key={}'.format(str(num),apiKey))
+                if response.status_code == 200:
+                    vals = response.json()
+                    arr = vals['photos']
+                    if len(arr) > 0:
+                        photo = random.choice(arr)
+                        await chan.send("Here's a picture from the red planet near us")
+                        await chan.send(photo['img_src'])
 
         if message.content.startswith('>apod'):
             chan = message.channel
@@ -48,7 +51,12 @@ class MyClient(discord.Client):
                 await chan.send(vals['url'])
 
         if message.content.startswith('>help'):
-            await message.reply("Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n 1. hello : Know the bot \n 2. apod : Astronomical Picture Of The Day")
+            commands = ["1. hello : Know the bot",
+            "2. apod : Astronomical Picture Of The Day" , "3. mars : NAVCAM picture from planet Mars"]
+            msg = "Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n"
+            for val in commands:
+                msg += val + '\n'
+            await message.reply(msg)
 
 
 client = MyClient()
