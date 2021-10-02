@@ -3,15 +3,9 @@ import json,sys,os,random
 import requests
 
 
-configs = {}
 
-
-with open(sys.path[0] + '/config.json', 'r+') as openfile:
-    json_object = json.load(openfile)
-    configs = json_object
-apiKey = configs['apiKey']
-
-
+apiKey = os.environ.get('apiKey')
+token = os.environ.get('token')
 
 class MyClient(discord.Client):
     global apiKey
@@ -49,4 +43,4 @@ class MyClient(discord.Client):
 
 
 client = MyClient()
-client.run(configs['token'])
+client.run(token)
