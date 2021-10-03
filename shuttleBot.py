@@ -89,7 +89,6 @@ class MyClient(discord.Client):
             print(text[0])
             await chan.send(text[0])
 
-
         if message.content.startswith('>earth'):
             if len(message.mentions) == 0:
                 person = message.author
