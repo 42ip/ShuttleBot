@@ -4,6 +4,28 @@ import random
 import requests
 import io
 from PIL import Image, ImageDraw
+import gpt_2_simple as gpt2
+import tarfile
+import gdown
+import sys
+
+
+url = 'https://drive.google.com/uc?id=1EVvLwJA1f507iF1fteBOZaJUK6CbBvl-'
+output = 'checkpoint_run1.tar'
+gdown.download(url, output, quiet=False)
+files = os.listdir()
+print(files)
+
+
+file_path = 'checkpoint_run1.tar'
+
+
+with tarfile.open(file_path, 'r') as tar:
+    tar.extractall()
+sess = gpt2.start_tf_sess()
+gpt2.load_gpt2(sess, run_name='run1')
+
+print('ALL DONE')
 
 apiKey = os.environ.get('apiKey')
 token = os.environ.get('token')
@@ -13,6 +35,7 @@ class MyClient(discord.Client):
     global apiKey
 
     async def on_ready(self):
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Astronaut In The Ocean"))
         print('Logged in as')
         print(self.user.name)
         print(self.user.id)
@@ -24,12 +47,14 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
+        chan = message.channel
+
 
         if message.content.startswith('>hello'):
             await message.reply(random.choice(self.possibleIntros), mention_author=True)
 
+
         if message.content.startswith('>mars'):
-            chan = message.channel
             arr = []
             while arr == []:
                 num = random.randint(1, 3250)
@@ -43,8 +68,9 @@ class MyClient(discord.Client):
                         await chan.send("Here's a picture from the red planet near us")
                         await chan.send(photo['img_src'])
 
+
         if message.content.startswith('>apod'):
-            chan = message.channel
+            
             response = requests.get(
                 'https://api.nasa.gov/planetary/apod?api_key={}'.format(apiKey))
             if response.status_code == 200:
@@ -52,12 +78,24 @@ class MyClient(discord.Client):
                 await chan.send("Today's Title is: " + vals['title'])
                 await chan.send(vals['url'])
 
+
+        if message.content.startswith('>plot'):
+            await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
+            text = gpt2.generate(sess, run_name='run1',
+             length=50,
+             prefix="<|startoftext|>",
+             truncate="<|endoftext|>\n",
+             include_prefix=False,return_as_list = True)
+            print(text[0])
+            await chan.send(text[0])
+
         if message.content.startswith('>earth'):
             if len(message.mentions) == 0:
                 person = message.author
             else:
                 person = message.mentions[0]
-            print(person.avatar_url)
+
+
             response = requests.get(person.avatar_url)
             image_bytes = io.BytesIO(response.content)
             im2 = Image.open(image_bytes)
@@ -71,17 +109,24 @@ class MyClient(discord.Client):
             draw.ellipse((0, 0, im2.width, im2.height), fill=170)
             im = im1.copy()
             im.paste(im2, (55, 65), mask_im)
-            # im = im2.copy()
+
+            msgs = ["Zuckerberg told me that you were blue today, well, you are now the Blue Planet! <:deadinside:762920553941303327>",
+                    "You are now a 12,000 km wide ball called Earth. Congratulations <:poggies:886538902184292393>",
+                    "I present to you the face of the planet with 7.8 billion people who contributed nothing to the space <:superAngry:843088789349335050>"]
+
             with io.BytesIO() as image_binary:
                 im.save(image_binary, 'PNG')
                 image_binary.seek(0)
                 picture = discord.File(image_binary, "space.png")
-                await message.channel.send("Guys i am earth now <:sadge:886538902352068628>")
-                await message.channel.send(file=picture)
+                await chan.send(random.choice(msgs))
+                await chan.send(file=picture)
 
         if message.content.startswith('>help'):
             commands = ["1. hello : Know the bot",
-                        "2. apod : Astronomical Picture Of The Day", "3. mars : NAVCAM picture from planet Mars", "4. earth: you become earth"]
+                        "2. apod : Astronomical Picture Of The Day",
+                        "3. mars : NAVCAM picture from planet Mars", 
+                        "4. earth: Become the planet Earth, a 6 septillion kg blue ball",
+                        "5. plot : DM the nearest satellite for a new movie plot"]
             msg = "Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n"
             for val in commands:
                 msg += val + '\n'
