@@ -35,6 +35,7 @@ class MyClient(discord.Client):
     global apiKey
 
     async def on_ready(self):
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Astronaut in the ocean"), status= discord.Status.idle)
         print('Logged in as')
         print(self.user.name)
         print(self.user.id)
