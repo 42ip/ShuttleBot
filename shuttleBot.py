@@ -136,21 +136,36 @@ class MyClient(discord.Client):
             
             elif resp.startswith('splash'):
                 ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ'}
+                genreTag = {"3d-renders" : '3d', 'architecture-interior' : 'arch','current-events' : 'event', 'experimental' : 'exp', 'fashion' : 'fashion', 'food-drink' : 'food', 'nature' : 'nature'}
+                genreName = {"3d" : '3d-renders', 'arch' : 'architecture-interior','event' : 'current-events', 'exp' : 'experimental', 'fashion' : 'fashion', 'food' : 'food-drink', 'nature' : 'nature'}
                 vals = resp.split()
                 if len(vals) == 1:
                     response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}'.format(splashKey))
                     if response.status_code == 200:
                         vals = response.json()
-                        await chan.send('Here is a photo that got sent in my family satellite group <:satellite_orbital:a069b0f6a6d79b5056dfc8a1f2cca4ad>')
+                        await chan.send('Here is a photo that got sent in my family satellite group :satellite_orbital:')
                         await chan.send(vals['urls']['thumb'])
-
+                else:
+                    if len(vals) != 2 or vals[1] not in ids:
+                        genreMsg = 'Here are the genres and its tags\n'
+                        for (k,v) in genreTag.items():
+                            genreMsg += k + ' -> ' + v + '\n'
+                        await chan.send("Splash takes only one or two inputs \n If you use '>splash' a random photo will be generated \n If you use '>splash {genreTag}' a particular genre specific photo shall be generated")
+                        await chan.send(genreMsg)
+                    elif vals[1] in ids:
+                        response = requests.get(
+                        'https://api.unsplash.com/photos/random/?client_id={}&topics={}'.format(splashKey,ids[vals[1]]))
+                    if response.status_code == 200:
+                        vals = response.json()
+                        await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
+                        await chan.send(vals['urls']['thumb'])
 
 
 
             else:
                 await message.reply("Hey! Why'd you call me? Know your place human, I am a busy rocket. Use >help and learn what I do, then hit the blast off button <:superAngry:843088789349335050>")
-                await chan.send('-bonk')
+
 
 
 client = MyClient()
