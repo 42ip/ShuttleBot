@@ -136,9 +136,9 @@ class MyClient(discord.Client):
                 await message.reply(msg)
             
             elif resp.startswith('splash'):
-                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ'}
-                genreTag = {"3d-renders" : '3d', 'architecture-interior' : 'arch','current-events' : 'event', 'experimental' : 'exp', 'fashion' : 'fashion', 'food-drink' : 'food', 'nature' : 'nature'}
-                genreName = {"3d" : '3d-renders', 'arch' : 'architecture-interior','event' : 'current-events', 'exp' : 'experimental', 'fashion' : 'fashion', 'food' : 'food-drink', 'nature' : 'nature'}
+                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ', 'street' : 'xHxYTMHLgOc', 'travel' : 'Fzo3zuOHN6w','rawr':'Jpg6KidlHk'}
+                genreTag = {"3d-renders" : '3d', 'architecture-interior' : 'arch','current-events' : 'event', 'experimental' : 'exp', 'fashion' : 'fashion', 'food-drink' : 'food', 'nature' : 'nature', 'street-photography' : 'street','travel' : 'travel','animals':'rawr'}
+                genreName = {v: k for k, v in genreTag.items()}
                 vals = resp.split()
                 if len(vals) == 1:
                     response = requests.get(
