@@ -136,7 +136,7 @@ class MyClient(discord.Client):
                 await message.reply(msg)
             
             elif resp.startswith('splash'):
-                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ', 'street' : 'xHxYTMHLgOc', 'travel' : 'Fzo3zuOHN6w','rawr':'Jpg6KidlHk'}
+                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ', 'street' : 'xHxYTMHLgOc', 'travel' : 'Fzo3zuOHN6w','rawr':'Jpg6Kidl-Hk'}
                 genreTag = {"3d-renders" : '3d', 'architecture-interior' : 'arch','current-events' : 'event', 'experimental' : 'exp', 'fashion' : 'fashion', 'food-drink' : 'food', 'nature' : 'nature', 'street-photography' : 'street','travel' : 'travel','animals':'rawr'}
                 genreName = {v: k for k, v in genreTag.items()}
                 vals = resp.split()
