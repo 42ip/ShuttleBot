@@ -155,12 +155,13 @@ class MyClient(discord.Client):
                         await chan.send("Splash takes only one or two inputs \n If you use '>splash' a random photo will be generated \n If you use '>splash {genreTag}' a particular genre specific photo shall be generated")
                         await chan.send(genreMsg)
                     elif vals[1] in ids:
+                        print(vals[1])
                         response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&topics={}'.format(splashKey,ids[vals[1]]))
                         if response.status_code == 200:
-                            vals = response.json()
+                            supreme = response.json()
                             await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
-                            await chan.send(vals['urls']['thumb'])
+                            await chan.send(supreme['urls']['thumb'])
 
 
 
