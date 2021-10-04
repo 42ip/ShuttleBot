@@ -146,7 +146,7 @@ class MyClient(discord.Client):
                     if response.status_code == 200:
                         vals = response.json()
                         await chan.send('Here is a photo that got sent in my family satellite group :satellite_orbital:')
-                        await chan.send(vals['urls']['thumb'])
+                        await chan.send(vals['urls']['small'])
                 else:
                     if len(vals) != 2 or vals[1] not in ids:
                         genreMsg = 'Here are the genres and its tags\n'
@@ -161,7 +161,7 @@ class MyClient(discord.Client):
                         if response.status_code == 200:
                             supreme = response.json()
                             await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
-                            await chan.send(supreme['urls']['thumb'])
+                            await chan.send(supreme['urls']['small'])
 
 
 
