@@ -29,7 +29,7 @@ print('ALL DONE')
 
 apiKey = os.environ.get('apiKey')
 token = os.environ.get('token')
-
+splashKey = os.environ.get('splashKey')
 
 class MyClient(discord.Client):
     global apiKey
@@ -91,7 +91,7 @@ class MyClient(discord.Client):
                 print(text[0])
                 await chan.send(text[0])
 
-            elif resp == 'earth':
+            elif resp.startswith('earth'):
                 if len(message.mentions) == 0:
                     person = message.author
                 else:
@@ -134,6 +134,20 @@ class MyClient(discord.Client):
                     msg += val + '\n'
                 await message.reply(msg)
             
+            elif resp.startswith('splash'):
+                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ'}
+                vals = resp.split()
+                if len(vals) == 1:
+                    response = requests.get(
+                        'https://api.unsplash.com/photos/random/?client_id={}'.format(splashKey))
+                    if response.status_code == 200:
+                        vals = response.json()
+                        await chan.send('Here is a photo that got sent in my family satellite group <:satellite_orbital:a069b0f6a6d79b5056dfc8a1f2cca4ad>')
+                        await chan.send(vals['urls']['thumb'])
+
+
+
+
             else:
                 await message.reply("Hey! Why'd you call me? Know your place human, I am a busy rocket. Use >help and learn what I do, then hit the blast off button <:superAngry:843088789349335050>")
                 await chan.send('-bonk')
