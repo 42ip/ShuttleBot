@@ -103,12 +103,12 @@ class MyClient(discord.Client):
                 'https://cdn.mos.cms.futurecdn.net/3upZx2gxxLpW7MBbnKYQLH-1200-80.jpg')
             image_bytes = io.BytesIO(response.content)
             im1 = Image.open(image_bytes)
-            im2 = im2.resize((478, 478))
+            im2 = im2.resize((470, 470))
             mask_im = Image.new("L", im2.size, 0)
             draw = ImageDraw.Draw(mask_im)
-            draw.ellipse((0, 0, im2.width, im2.height), fill=170)
+            draw.ellipse((0, 0, im2.width, im2.height), fill=150 )
             im = im1.copy()
-            im.paste(im2, (55, 65), mask_im)
+            im.paste(im2, (35, 40), mask_im)
 
             msgs = ["Zuckerberg told me that you were blue today, well, you are now the Blue Planet! <:deadinside:762920553941303327>",
                     "You are now a 12,000 km wide ball called Earth. Congratulations <:poggies:886538902184292393>",
