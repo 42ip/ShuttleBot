@@ -103,7 +103,7 @@ class MyClient(discord.Client):
                 'https://cdn.mos.cms.futurecdn.net/3upZx2gxxLpW7MBbnKYQLH-1200-80.jpg')
             image_bytes = io.BytesIO(response.content)
             im1 = Image.open(image_bytes)
-            im2 = im2.resize((440, 440))
+            im2 = im2.resize((478, 478))
             mask_im = Image.new("L", im2.size, 0)
             draw = ImageDraw.Draw(mask_im)
             draw.ellipse((0, 0, im2.width, im2.height), fill=170)
