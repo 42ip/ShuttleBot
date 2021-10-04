@@ -128,7 +128,8 @@ class MyClient(discord.Client):
                             "2. apod : Astronomical Picture Of The Day",
                             "3. mars : NAVCAM picture from planet Mars", 
                             "4. earth: Become the planet Earth, a 6 septillion kg blue ball",
-                            "5. plot : DM the nearest satellite for a new movie plot"]
+                            "5. plot : DM the nearest satellite for a new movie plot",
+                            "6. splash: Generate random photos. Use >splash help to learn more" ]
                 msg = "Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n"
                 for val in commands:
                     msg += val + '\n'
@@ -156,10 +157,10 @@ class MyClient(discord.Client):
                     elif vals[1] in ids:
                         response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&topics={}'.format(splashKey,ids[vals[1]]))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
-                        await chan.send(vals['urls']['thumb'])
+                        if response.status_code == 200:
+                            vals = response.json()
+                            await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
+                            await chan.send(vals['urls']['thumb'])
 
 
 
