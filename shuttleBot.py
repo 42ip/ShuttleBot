@@ -169,7 +169,7 @@ class MyClient(discord.Client):
                 cName = resp.split()[1]
                 print(cName)
                 placeName = geograpy.get_place_context(text='I am from ' + cName)
-                print(placeName.cities, placeName.others)
+                print(placeName.cities, placeName.other)
                 if len(placeName.countries) > 0:
                     response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.countries[0]))
