@@ -167,7 +167,7 @@ class MyClient(discord.Client):
 
             elif resp.startswith('tbd'):
                 cName = resp.split()[1]
-                print(cName)
+                cName = cName[0].upper() + cName[1:]
                 placeName = geograpy.get_place_context(text='I am from ' + cName)
                 print(placeName.cities, placeName.other)
                 if len(placeName.countries) > 0:
