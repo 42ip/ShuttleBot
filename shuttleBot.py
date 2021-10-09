@@ -186,6 +186,7 @@ class MyClient(discord.Client):
                         await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.cities[0]))
                         await chan.send(vals['urls']['small'])
                 
+                
                 elif len(placeName.regions) > 0:
                     response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.regions[0]))
