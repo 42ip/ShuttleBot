@@ -10,7 +10,7 @@ import gdown
 import sys
 import geograpy
 import nltk
-nltk.download('punkt')
+nltk.download()
 url = 'https://drive.google.com/uc?id=1EVvLwJA1f507iF1fteBOZaJUK6CbBvl-'
 output = 'checkpoint_run1.tar'
 gdown.download(url, output, quiet=False)
