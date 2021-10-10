@@ -168,7 +168,7 @@ class MyClient(discord.Client):
             elif resp.startswith('tbd'):
                 cName = resp.split()[1]
                 cName = cName[0].upper() + cName[1:]
-                placeName = geograpy.get_place_context(text='I am from ' + cName)
+                placeName = geograpy.get_place_context(text='I am from Paris')
                 print(placeName.cities, placeName.other)
                 if len(placeName.countries) > 0:
                     response = requests.get(
@@ -186,7 +186,7 @@ class MyClient(discord.Client):
                         await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.cities[0]))
                         await chan.send(vals['urls']['small'])
                 
-                
+
                 elif len(placeName.regions) > 0:
                     response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.regions[0]))
