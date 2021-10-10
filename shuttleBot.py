@@ -166,25 +166,25 @@ class MyClient(discord.Client):
 
 
             elif resp.startswith('tbd'):
-                # cName = resp.split()[1]
-                # cName = cName[0].upper() + cName[1:]
-                text = 'I am from Paris'
+                cName = resp.split()[1]
+                cName = cName[0].upper() + cName[1:]
+                text = 'I am from ' + cName
                 placeName = geograpy.get_place_context(text=text)
-                print(placeName.cities, placeName.other,placeName.countries,placeName.regions)
-                if len(placeName.countries) > 0:
-                    response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.countries[0]))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.countries[0]))
-                        await chan.send(vals['urls']['small'])
 
-                elif len(placeName.cities) > 0:
+                if len(placeName.cities) > 0:
                     response = requests.get(
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.cities[0]))
                     if response.status_code == 200:
                         vals = response.json()
                         await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.cities[0]))
+                        await chan.send(vals['urls']['small'])
+
+                elif len(placeName.countries) > 0:
+                    response = requests.get(
+                        'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.countries[0]))
+                    if response.status_code == 200:
+                        vals = response.json()
+                        await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.countries[0]))
                         await chan.send(vals['urls']['small'])
                 
 
