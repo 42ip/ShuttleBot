@@ -130,7 +130,7 @@ class MyClient(discord.Client):
                             "3. mars : NAVCAM picture from planet Mars", 
                             "4. earth: Become the planet Earth, a 6 septillion kg blue ball",
                             "5. plot : DM the nearest satellite for a new movie plot",
-                            "6. splash: Generate random photos. Use >splash help to learn more"
+                            "6. splash: Generate random photos. Use >splash help to learn more",
                             "7. travel : Enter 'travel <placeName>' to get an image from there" ]
                 msg = "Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n"
                 for val in commands:
@@ -177,7 +177,7 @@ class MyClient(discord.Client):
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.cities[0]))
                     if response.status_code == 200:
                         vals = response.json()
-                        await chan.send('Here is a photo from the city {} for you :wink:'.format(placeName.cities[0]))
+                        await chan.send('Here is a photo from {} for you :wink:'.format(placeName.cities[0]))
                         await chan.send(vals['urls']['small'])
 
                 elif len(placeName.countries) > 0:
@@ -185,7 +185,7 @@ class MyClient(discord.Client):
                         'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey,placeName.countries[0]))
                     if response.status_code == 200:
                         vals = response.json()
-                        await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.countries[0]))
+                        await chan.send('Here is a photo from {} for you :wink:'.format(placeName.countries[0]))
                         await chan.send(vals['urls']['small'])
                 
 
