@@ -1,1 +1,1 @@
-web: gunicorn shuttleBot:client
+worker: python3 shuttleBot.py
