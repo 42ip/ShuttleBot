@@ -1,1 +1,1 @@
-worker: python3 shuttleBot.py
+web: python3 shuttleBot.py
