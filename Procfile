@@ -1,1 +1,1 @@
-web: python3 shuttleBot.py
+web: python3 shuttleBot.py runserver 0.0.0.0:$PORT
