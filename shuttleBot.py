@@ -41,12 +41,9 @@ class MyClient(discord.Client):
         print(self.user.name)
         print(self.user.id)
         print('------')
-        embedVar = discord.Embed(title="Hello fellow earthlings, I AM BACK!",description="I might have been down a few days, but you all must know how hard it is to be active since I have a station to look after too. \n But no fear, I am back now. My better half is acting like an asteroid ever since I have joined this server, hence I shall be here only for 23 days per month. Hope you understand.",color=0x00ffff,image='https://memegenerator.net/img/instances/70793938.jpg')
-        chan =  client.get_channel(714036401334911036)
-        await chan.send(embed = embedVar)
 
-    possibleIntros = ['Hi, My name is Shuttle. Hope I can get some space here', "Hello, I'm Shuttle! I am tasked to orbit this server",
-                      "Hey, My name is Shuttle. My sensors are telling me that you might be a star", "Hello, I am Shuttle. You seem to radiate some good vibes"]
+    possibleIntros = ['Hope I can get some space here', "I am tasked to orbit this server",
+                      "My sensors are telling me that you might be a star", "You seem to radiate some good vibes", "I don't believe in astrology", "Before organizing any event, remember to PLANET.", "You don't get free milk in the Milky Way <:sadge:886538902352068628>", "Astronauts can't scratch their face or nose once they are in the suit.", "What happens in a black hole, stays in a black hole :)", "Its always been about the sun, he wants to be the center of everything :(", "Concentrate and work! Don't SPACE out"]
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
@@ -57,7 +54,10 @@ class MyClient(discord.Client):
         if resp[0] == '>':
             resp = resp[1:].lower()
             if resp == 'hello':
-                await message.reply(random.choice(self.possibleIntros), mention_author=True)
+                file = discord.File("shuttleLogo.png")
+                embedVar = discord.Embed(title="Hey, My name is Shuttle.",description=random.choice(self.possibleIntros),color=0x00ffff)
+                embedVar.set_thumbnail('attachment://shuttleLogo.png')
+                await message.reply(mention_author=True, embed= embedVar)
 
 
             elif resp == 'mars':
