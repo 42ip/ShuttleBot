@@ -57,7 +57,7 @@ class MyClient(discord.Client):
                 file = discord.File("shuttleLogo.png")
                 embedVar = discord.Embed(title="Hey, My name is Shuttle.",description=random.choice(self.possibleIntros),color=0x00ffff)
                 embedVar.set_thumbnail('attachment://shuttleLogo.png')
-                await message.reply(mention_author=True, embed= embedVar)
+                await chan.send(embed= embedVar)
 
 
             elif resp == 'mars':
