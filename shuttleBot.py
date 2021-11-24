@@ -11,7 +11,7 @@ import sys
 import geograpy
 import nltk
 nltk.download('all')
-url = 'https://drive.google.com/uc?id=1EVvLwJA1f507iF1fteBOZaJUK6CbBvl-'
+url = 'https://drive.google.com/uc?id=1-0IYKo6M4ERufKjhgs05GRCsLleTI-Fj'
 output = 'checkpoint_run1.tar'
 gdown.download(url, output, quiet=False)
 files = os.listdir()
@@ -41,6 +41,9 @@ class MyClient(discord.Client):
         print(self.user.name)
         print(self.user.id)
         print('------')
+        embedVar = discord.Embed(title="Hello fellow earthlings, I AM BACK!",description="I might have been down a few days, but you all must know how hard it is to be active since I have a station to look after too. \n But no fear, I am back now. My better half is acting like an asteroid ever since I have joined this server, hence I shall be here only for 23 days per month. Hope you understand.",color=0x00ffff,image='https://memegenerator.net/img/instances/70793938.jpg')
+        chan =  client.get_channel(714036401334911036)
+        await chan.send(embedVar)
 
     possibleIntros = ['Hi, My name is Shuttle. Hope I can get some space here', "Hello, I'm Shuttle! I am tasked to orbit this server",
                       "Hey, My name is Shuttle. My sensors are telling me that you might be a star", "Hello, I am Shuttle. You seem to radiate some good vibes"]
