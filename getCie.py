@@ -12,7 +12,7 @@ async def getCie(response,message,channel,client):
     isthere = isPrivate = False
     ctx = message
     author = message.author.id
-    user= await client.get_user_info(author)
+    # user= await client.get_user_info(author)
     isNotPrivate = False
     if isinstance(ctx.channel, discord.channel.DMChannel):
         isNotPrivate = True
