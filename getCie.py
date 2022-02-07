@@ -10,7 +10,7 @@ import discord
     
 async def getCie(response,message,channel,client):
     isthere = isPrivate = False
-    ctx = await client.get_context(message)
+    ctx = message
     author = message.author.id
     user= await client.get_user_info(author)
     isNotPrivate = False
