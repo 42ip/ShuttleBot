@@ -18,8 +18,8 @@ async def getCie(response,message,channel,client):
         isNotPrivate = True
     if isNotPrivate:
         await channel.send("Please dm me ;) i wont give cie stuff in groups")
-        await client.send_message(user,"Message me here with the command ``` >cie your_usn yyyy-mm-dd if you arent registered or just >cie ``` ")
-        await client.delete_message(message)
+        await message.author.send("Message me here with the command ``` >cie your_usn yyyy-mm-dd if you arent registered or just >cie ``` ")
+        # await client.delete_message(message)
         return
 
 
@@ -32,7 +32,7 @@ async def getCie(response,message,channel,client):
         if message.author in j:
             username,password = j[message.author]['username'],j['password']
         else:
-            await client.send_message(user,"You arent registered :( run the command in the following manner : ``` >cie your_usn yyyy-mm-dd ```")
+            await message.author.send("You arent registered :( run the command in the following manner : ``` >cie your_usn yyyy-mm-dd ```")
             return
     elif len(vals) == 3:
         # assuming person is signing in. this will overwrite creds
@@ -44,7 +44,7 @@ async def getCie(response,message,channel,client):
             j = json.load(f.read())
         if message.author in j: isthere = True
         j[message.author] = {'username':username,'password':password}
-        await client.send_message(user,"Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
+        await message.author.send("Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
         with open('../auth.json','w') as f:
             json.dump(j,f)
 
@@ -58,7 +58,7 @@ async def getCie(response,message,channel,client):
         a = s.get("http://parents.msrit.edu/",auth=(username,password))
         scode2 = a.status_code
         if scode1 != scode2 != 200:
-            await client.send_message(user,"Somethings wrong :( Try registering again" )
+            await message.author.send("Somethings wrong :( Try registering again" )
             return
         # getting the subject data
         r2 = s.get("http://parents.msrit.edu/index.php?option=com_studentdashboard&controller=studentdashboard&task=dashboard")
@@ -89,4 +89,4 @@ async def getCie(response,message,channel,client):
             response += "".join(d[i][0]) + "\n"
             response += "".join(d[i][1]) + "\n"
             response += "\n"
-        await client.send_message(user,response)
+        await message.author.send(response)
