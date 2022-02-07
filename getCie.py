@@ -41,7 +41,7 @@ async def getCie(response,message,channel,client):
         isthere = False
         j = {}
         with open('auth.json','r') as f:
-            j = json.load(f.read())
+            j = json.load(f)
         if message.author.id in j: isthere = True
         j[message.author.id] = {'username':username,'password':password}
         await message.author.send("Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
