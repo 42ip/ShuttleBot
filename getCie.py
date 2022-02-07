@@ -29,8 +29,8 @@ async def getCie(response,message,channel,client):
         j = {}
         with open('auth.json','r') as f:
             j = json.loads(f.read())
-        if message.author in j:
-            username,password = j[message.author]['username'],j['password']
+        if message.author.id in j:
+            username,password = j[message.author.id]['username'],j['password']
         else:
             await message.author.send("You arent registered :( run the command in the following manner : ``` >cie your_usn yyyy-mm-dd ```")
             return
@@ -42,8 +42,8 @@ async def getCie(response,message,channel,client):
         j = {}
         with open('auth.json','r') as f:
             j = json.load(f.read())
-        if message.author in j: isthere = True
-        j[message.author] = {'username':username,'password':password}
+        if message.author.id in j: isthere = True
+        j[message.author.id] = {'username':username,'password':password}
         await message.author.send("Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
         with open('auth.json','w') as f:
             json.dump(j,f)
