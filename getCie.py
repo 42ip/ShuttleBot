@@ -13,9 +13,9 @@ async def getCie(response,message,channel,client):
     ctx = message
     author = message.author.id
     # user= await client.get_user_info(author)
-    isNotPrivate = False
+    isNotPrivate = True
     if isinstance(ctx.channel, discord.channel.DMChannel):
-        isNotPrivate = True
+        isNotPrivate = False
     if isNotPrivate:
         await channel.send("Please dm me ;) i wont give cie stuff in groups")
         await message.author.send("Message me here with the command ``` >cie your_usn yyyy-mm-dd if you arent registered or just >cie ``` ")
