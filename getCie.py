@@ -27,7 +27,7 @@ async def getCie(response,message,channel,client):
     username = password = " "
     if len(vals) == 1:
         j = {}
-        with open('../auth.json','r') as f:
+        with open('auth.json','r') as f:
             j = json.loads(f.read())
         if message.author in j:
             username,password = j[message.author]['username'],j['password']
@@ -40,12 +40,12 @@ async def getCie(response,message,channel,client):
         password = vals[2]
         isthere = False
         j = {}
-        with open('../auth.json','r') as f:
+        with open('auth.json','r') as f:
             j = json.load(f.read())
         if message.author in j: isthere = True
         j[message.author] = {'username':username,'password':password}
         await message.author.send("Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
-        with open('../auth.json','w') as f:
+        with open('auth.json','w') as f:
             json.dump(j,f)
 
     data = {'task': 'login', 'option':'com_user','username': username,'passwd': password}
