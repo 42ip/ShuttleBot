@@ -205,7 +205,7 @@ class MyClient(discord.Client):
                     await message.reply("A man who is said to be from the ocean stole some of our drives :astronaut:, maybe this unknown place's info was in it <:sadge:886538902352068628>")
 
             elif resp.startswith('cie'):
-                getCie(resp,message,chan,client)
+                getCie.getCie(resp,message,chan,client)
             else:
                 await message.reply("Hey! Why'd you call me? Know your place human, I am a busy rocket. Use >help and learn what I do, then hit the blast off button <:superAngry:843088789349335050>")
 
