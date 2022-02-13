@@ -10,7 +10,8 @@ import gdown
 import sys
 import geograpy
 import nltk
-import getCie
+import commands.getCie as getCie
+from commands.hello import hello
 nltk.download('all')
 url = 'https://drive.google.com/uc?id=1-0IYKo6M4ERufKjhgs05GRCsLleTI-Fj'
 output = 'checkpoint_run1.tar'
@@ -55,10 +56,11 @@ class MyClient(discord.Client):
         if resp[0] == '>':
             resp = resp[1:].lower()
             if resp == 'hello':
-                file = discord.File("shuttleLogo.png")
-                embedVar = discord.Embed(title="Hey, My name is Shuttle.",description=random.choice(self.possibleIntros),color=0x00ffff)
-                embedVar.set_thumbnail(url = 'attachment://shuttleLogo.png')
-                await chan.send(embed= embedVar)
+                # file = discord.File("shuttleLogo.png")
+                await hello(introList=self.possibleIntros,channel=chan)
+                # embedVar = discord.Embed(title="Hey, My name is Shuttle.",description=random.choice(self.possibleIntros),color=0x00ffff)
+                # embedVar.set_thumbnail(url = 'attachment://shuttleLogo.png')
+                # await chan.send(embed= embedVar)
 
 
             elif resp == 'mars':
