@@ -4,8 +4,6 @@ import requests
 from bs4 import BeautifulSoup as bs
 import json
 import discord
-# username = '1ms19cs045'
-# password = '2002-07-17'
  
     
 async def getCie(response,message,channel,client):
