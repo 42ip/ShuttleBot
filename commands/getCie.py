@@ -26,6 +26,13 @@ async def createDataFrameAndSaveImage(d,author,name):
     ax.axis('tight')
    
     tab = pd.plotting.table(ax,df,cellLoc = 'center', rowLoc = 'center',loc='center')
+    table_props=tab.properties()
+    # print(table_props)
+    table_cells=table_props['celld']
+    for cell in table_cells.values():
+        cell.set_width(0.8)
+        cell.set_height(0.065)
+        cell.set_fontsize(12)
     for i in range(0, len(df.columns)):
         for j in range(0,len(df) + 1):
             cell = tab[j, i]
