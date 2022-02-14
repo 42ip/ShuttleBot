@@ -6,7 +6,8 @@ import json,sys
 import discord
 import pandas as pd
 import re
-import dataframe_image as dfi
+# import dataframe_image as dfi
+import matplotlib.pyplot as plt
 from PIL import Image
 import io
 
@@ -17,14 +18,20 @@ async def createDataFrameAndSaveImage(d,author,name):
     df = None
     df = pd.DataFrame(rowdata,columns=columns)
     df.index = subjectindices
-    df_styled = df.style.background_gradient() #adding a gradient based on values in cell
-    dfi.export(df_styled,sys.path[0] + "/{}.png".format(name))
+    f = plt.figure(figsize=(15,10))
+    ax = f.add_subplot(1,1,1, frame_on=False) # no visible frame
+    ax.xaxis.set_visible(False)  # hide the x axis
+    ax.yaxis.set_visible(False)
+    pd.plotting.table(ax,df,loc='upper right')
+    plt.savefig(sys.path[0] + "/{}.png".format(name))
+    # df_styled = df.style.background_gradient() #adding a gradient based on values in cell
+    # dfi.export(df_styled,sys.path[0] + "/{}.png".format(name))
     im = Image.open(sys.path[0] + "/{}.png".format(name))
     with io.BytesIO() as image_binary:
         im.save(image_binary, 'PNG')
         image_binary.seek(0)
         picture = discord.File(image_binary, "{}.png".format(name))
-        await author.send("")
+        # await author.send("")
         await author.send(file=picture)
 
 async def getCie(response,message,channel,getcie):
