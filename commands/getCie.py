@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup as bs
 import json,sys
 import discord
 import pandas as pd
+import re
 import dataframe_image as dfi
 from PIL import Image
 import io
