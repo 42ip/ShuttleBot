@@ -10,6 +10,6 @@ gpt-2-simple==0.7.2
 gdown==3.14.0
 nltk==3.6.2
 geograpy3==0.2.1
-tensorflow==1.15.4
+tensorflow==2.5.3
 pandas==1.4.1
 dataframe-image==0.1.1
