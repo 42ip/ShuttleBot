@@ -18,12 +18,12 @@ async def createDataFrameAndSaveImage(d,author,name):
     df = None
     df = pd.DataFrame(rowdata,columns=columns)
     df.index = subjectindices
-    f = plt.figure(figsize=(15,10))
+    f = plt.figure(figsize=(7,7/2))
     ax = f.add_subplot(1,1,1, frame_on=False) # no visible frame
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)
     pd.plotting.table(ax,df,loc='upper right')
-    plt.savefig(sys.path[0] + "/{}.png".format(name))
+    plt.savefig(sys.path[0] + "/{}.png".format(name),transparent=True,pad_inches=0)
     # df_styled = df.style.background_gradient() #adding a gradient based on values in cell
     # dfi.export(df_styled,sys.path[0] + "/{}.png".format(name))
     im = Image.open(sys.path[0] + "/{}.png".format(name))
