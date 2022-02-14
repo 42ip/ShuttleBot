@@ -2,12 +2,32 @@
 from collections import defaultdict
 import requests
 from bs4 import BeautifulSoup as bs
-import json
+import json,sys
 import discord
- 
-    
-async def getCie(response,message,channel,client):
-    isthere = isPrivate = False
+import pandas as pd
+import dataframe_image as dfi
+from PIL import Image
+import io
+
+async def createDataFrameAndSaveImage(d,author,name):
+    subjectindices = [capt for capt in d]
+    columns = d[subjectindices[0]][0] if name == 'cie' else ['Attended','Absent','Remaining','Percentage']
+    rowdata = [d[capt][1] for capt in d] if name == 'cie' else [d[capt] for capt in d]
+    df = None
+    df = pd.DataFrame(rowdata,columns=columns)
+    df.index = subjectindices
+    df_styled = df.style.background_gradient() #adding a gradient based on values in cell
+    dfi.export(df_styled,sys.path[0] + "/{}.png".format(name))
+    im = Image.open(sys.path[0] + "/{}.png".format(name))
+    with io.BytesIO() as image_binary:
+        im.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        picture = discord.File(image_binary, "{}.png".format(name))
+        await author.send("")
+        await author.send(file=picture)
+
+async def getCie(response,message,channel,getcie):
+    isthere  = False
     ctx = message
     author = message.author.id
     # user= await client.get_user_info(author)
@@ -19,7 +39,6 @@ async def getCie(response,message,channel,client):
         await message.author.send("Message me here with the command ``` >cie your_usn yyyy-mm-dd if you arent registered or just >cie ``` ")
         # await client.delete_message(message)
         return
-
 
     vals = response.split()
     username = password = " "
@@ -63,28 +82,66 @@ async def getCie(response,message,channel,client):
         soup = bs(r2.text,'lxml') 
         # each value in the indices array will link to the subject page of particular subject   
         indices = []
-        for a in soup.findAll('a',href=True):
+        aindices = []
+        for a in soup.findAll('a', href=True):
             if 'ciedetails' in a['href']:
                 indices.append(a['href'])
-        d = defaultdict(list)
-        for site in indices:
-            r = s.get("http://parents.msrit.edu/{}".format(site))
-            soup  = bs(r.text,'lxml')
-            capt = soup.find('caption').contents[0]
-            t = soup.find('table',{'class':'uk-table cn-cie-table uk-table-responsive'})
+            elif 'attendencelist' in a['href']:
+                aindices.append(a['href'])
+        if getcie:
             headers = []
-            datas = []
-            for header in t.findAll('th'):
-                headers.append(header.contents[0].replace(" ","") + '\t')
-            for data in t.findAll('td'):
-                datas.append(data.contents[0].replace(" ","") + '\t')
-            datas[7] += '\t'
-            datas[8] += '\t'
-            d[capt] = [headers,datas]
-        response = "Here are your CIE details: \n"
-        for i in d:
-            response += i + '\n'
-            response += "".join(d[i][0]) + "\n"
-            response += "".join(d[i][1]) + "\n"
-            response += "\n"
-        await message.author.send(response)
+            subjects = []
+            d = defaultdict(list)
+            for site in indices:
+                r = s.get("http://parents.msrit.edu/{}".format(site))
+                soup = bs(r.text, 'lxml')
+                capt = soup.find('caption').contents[0]  # type:ignore
+                table = soup.find(
+                    'table', {'class': 'uk-table cn-cie-table uk-table-responsive'})
+                headers = []
+                datas = []
+                for header in table.findAll('th'):  # type:ignore
+                    headers.append(header.contents[0].replace(" ", ""))
+                    # headers.append(header.contents[0].replace(" ","") + '\t')
+                for data in table.findAll('td'):  # type:ignore
+                    datas.append(data.contents[0].replace(" ", ""))
+                    # datas.append(data.contents[0].replace(" ","") + '\t')
+                datas[7] += ''
+                datas[8] += ''
+                d[capt] = [headers, datas]
+                headers = d[capt][0]
+            await createDataFrameAndSaveImage(d,message.author,'cie')
+            # print(ta([headers] + [d[i][1] for i in d ],tablefmt="fancy_grid",showindex=[''] + [i for i in d]))
+            # for i in d:
+            # print(i)
+            # print(ta([d[i][0],d[i][1]],tablefmt="fancy_grid"))
+            #     print(ta([d[i][0],d[i][1]]))
+
+        else:
+            d2 = {}
+            for site in aindices:
+                r = s.get("http://parents.msrit.edu/{}".format(site))
+                soup = bs(r.text, 'lxml')
+                capt = soup.find('div', {
+                                'class': 'md-card-head md-bg-light-blue-600 uk-flex'}).find('span').contents[0]
+                nos = re.findall('\[.*\]', soup.text)
+                wantmarks = [x[1:-1] for x in nos]
+                perc = 0
+                perc = int(
+                    int(wantmarks[0]) / sum([int(i) if i != '' else 0 for i in wantmarks[:-1]]) * 100)
+                wantmarks[0] = "Attended: " + wantmarks[0]
+                wantmarks[1] = "Absent: " + wantmarks[1]
+                wantmarks[2] = "Remaining: " + wantmarks[2]
+                wantmarks.append("You have {}% attendance".format(perc))
+                d2[capt] = wantmarks
+            await createDataFrameAndSaveImage(d2,message.author,'attendance')
+        # print(ta([d2[i] for i in d2], tablefmt="fancy_grid",
+        #       showindex=[i for i in d2]))
+        
+        # response = "Here are your CIE details: \n"
+        # for i in d:
+        #     response += i + '\n'
+        #     response += "".join(d[i][0]) + "\n"
+        #     response += "".join(d[i][1]) + "\n"
+        #     response += "\n"
+        # await message.author.send(response)
