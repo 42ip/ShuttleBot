@@ -15,20 +15,25 @@ from commands.mars import mars
 from commands.splash import splash
 
 nltk.download('all')
-url = 'https://drive.google.com/uc?id=1-0IYKo6M4ERufKjhgs05GRCsLleTI-Fj'
-output = 'checkpoint_run1.tar'
-gdown.download(url, output, quiet=False)
-files = os.listdir()
-print(files)
+found = False
+try:
+    url = 'https://drive.google.com/uc?id=1-0IYKo6M4ERufKjhgs05GRCsLleTI-Fj'
+    output = 'checkpoint_run1.tar'
+    gdown.download(url, output, quiet=False)
+    files = os.listdir()
+    print(files)
 
 
-file_path = 'checkpoint_run1.tar'
+    file_path = 'checkpoint_run1.tar'
 
 
-with tarfile.open(file_path, 'r') as tar:
-    tar.extractall()
-sess = gpt2.start_tf_sess()
-gpt2.load_gpt2(sess, run_name='run1')
+    with tarfile.open(file_path, 'r') as tar:
+        tar.extractall()
+    sess = gpt2.start_tf_sess()
+    gpt2.load_gpt2(sess, run_name='run1')
+    found = True
+except FileNotFoundError:
+    print("Oh no, no access")
 
 print('ALL DONE')
 
@@ -70,14 +75,17 @@ class MyClient(discord.Client):
 
 
             elif resp == 'plot':
-                await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
-                text = gpt2.generate(sess, run_name='run1',
-                length=50,
-                prefix="<|startoftext|>",
-                truncate="<|endoftext|>\n",
-                include_prefix=False,return_as_list = True)
-                print(text[0])
-                await chan.send(text[0])
+                if found:
+                    await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
+                    text = gpt2.generate(sess, run_name='run1',
+                    length=50,
+                    prefix="<|startoftext|>",
+                    truncate="<|endoftext|>\n",
+                    include_prefix=False,return_as_list = True)
+                    print(text[0])
+                    await chan.send(text[0])
+                else:
+                    await chan.send("All the movie satellites are away from me at this moment.")
 
             elif resp.startswith('earth'):
                 await earth(message=message,channel=chan)
