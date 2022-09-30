@@ -68,9 +68,9 @@ async def getCie(response,message,channel,getcie):
     vals = response.split()
     username = password = " "
     if len(vals) == 1:
-        j = {}
-        with open('auth.json','r') as f:
-            j = json.loads(f.read())
+        j = await json.loads(requests.get("https://shuttlebot-85b8e-default-rtdb.firebaseio.com/users.json"))
+        # with open('auth.json','r') as f:
+            # j = json.loads(f.read())
         if message.author.id in j:
             username,password = j[message.author.id]['username'],j['password']
         else:
@@ -81,14 +81,16 @@ async def getCie(response,message,channel,getcie):
         username = vals[1]
         password = vals[2]
         isthere = False
-        j = {}
-        with open('auth.json','r') as f:
-            j = json.load(f)
+        j = await json.loads(requests.get("https://shuttlebot-85b8e-default-rtdb.firebaseio.com/users.json"))
+        # with open('auth.json','r') as f:
+            # j = json.load(f)
         if message.author.id in j: isthere = True
         j[message.author.id] = {'username':username,'password':password}
+        await requests.put("https://shuttlebot-85b8e-default-rtdb.firebaseio.com/users.json",j)
         await message.author.send("Ah! i see you're updating <wink> " if isthere else "Welcome {} ! I'll send you your Cie stuff shortly..".format(message.author))
-        with open('auth.json','w') as f:
-            json.dump(j,f)
+
+        # with open('auth.json','w') as f:
+            # json.dump(j,f)
 
     data = {'task': 'login', 'option':'com_user','username': username,'passwd': password}
     with requests.Session() as s:
