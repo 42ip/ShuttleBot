@@ -1,17 +1,21 @@
 import discord
 import os
-import random
 import requests
-import io
-from PIL import Image, ImageDraw
 import gpt_2_simple as gpt2
 import tarfile
 import gdown
-import sys
 import geograpy
 import nltk
+from commands.apod import apod
+from commands.earth import earth
+import commands.getCie as getCie
+from commands.hello import hello
+from commands.help import help as helper
+from commands.mars import mars
+from commands.splash import splash
+
 nltk.download('all')
-url = 'https://drive.google.com/uc?id=1EVvLwJA1f507iF1fteBOZaJUK6CbBvl-'
+url = 'https://drive.google.com/uc?id=1-0IYKo6M4ERufKjhgs05GRCsLleTI-Fj'
 output = 'checkpoint_run1.tar'
 gdown.download(url, output, quiet=False)
 files = os.listdir()
@@ -42,8 +46,8 @@ class MyClient(discord.Client):
         print(self.user.id)
         print('------')
 
-    possibleIntros = ['Hi, My name is Shuttle. Hope I can get some space here', "Hello, I'm Shuttle! I am tasked to orbit this server",
-                      "Hey, My name is Shuttle. My sensors are telling me that you might be a star", "Hello, I am Shuttle. You seem to radiate some good vibes"]
+    possibleIntros = ['Hope I can get some space here', "I am tasked to orbit this server",
+                      "My sensors are telling me that you might be a star", "You seem to radiate some good vibes", "I don't believe in astrology", "Before organizing any event, remember to PLANET.", "You don't get free milk in the Milky Way <:sadge:886538902352068628>", "Astronauts can't scratch their face or nose once they are in the suit.", "What happens in a black hole, stays in a black hole :)", "Its always been about the sun, he wants to be the center of everything :(", "Concentrate and work! Don't SPACE out"]
 
     async def on_message(self, message):
         if message.author.id == self.user.id:
@@ -54,32 +58,15 @@ class MyClient(discord.Client):
         if resp[0] == '>':
             resp = resp[1:].lower()
             if resp == 'hello':
-                await message.reply(random.choice(self.possibleIntros), mention_author=True)
+                await hello(introList=self.possibleIntros,channel=chan)
 
 
             elif resp == 'mars':
-                arr = []
-                while arr == []:
-                    num = random.randint(1, 3250)
-                    response = requests.get(
-                        'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol={}&camera=navcam&api_key={}'.format(str(num), apiKey))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        arr = vals['photos']
-                        if len(arr) > 0:
-                            photo = random.choice(arr)
-                            await chan.send("Here's a picture from the red planet near us")
-                            await chan.send(photo['img_src'])
+                await mars(channel=chan,apiKey=apiKey)
 
 
             elif resp == 'apod':
-                
-                response = requests.get(
-                    'https://api.nasa.gov/planetary/apod?api_key={}'.format(apiKey))
-                if response.status_code == 200:
-                    vals = response.json()
-                    await chan.send("Today's Title is: " + vals['title'])
-                    await chan.send(vals['url'])
+                await apod(channel=chan,apiKey=apiKey)
 
 
             elif resp == 'plot':
@@ -93,77 +80,13 @@ class MyClient(discord.Client):
                 await chan.send(text[0])
 
             elif resp.startswith('earth'):
-                if len(message.mentions) == 0:
-                    person = message.author
-                else:
-                    person = message.mentions[0]
-
-
-                response = requests.get(person.avatar_url)
-                image_bytes = io.BytesIO(response.content)
-                im2 = Image.open(image_bytes)
-                response = requests.get(
-                    'https://cdn.mos.cms.futurecdn.net/3upZx2gxxLpW7MBbnKYQLH-1200-80.jpg')
-                image_bytes = io.BytesIO(response.content)
-                im1 = Image.open(image_bytes)
-                im2 = im2.resize((470, 470))
-                mask_im = Image.new("L", im2.size, 0)
-                draw = ImageDraw.Draw(mask_im)
-                draw.ellipse((0, 0, im2.width, im2.height), fill=150 )
-                im = im1.copy()
-                im.paste(im2, (35, 40), mask_im)
-
-                msgs = ["Zuckerberg told me that you were blue today, well, you are now the Blue Planet! <:deadinside:762920553941303327>",
-                        "You are now a 12,000 km wide ball called Earth. Congratulations <:poggies:886538902184292393>",
-                        "I present to you the face of the planet with 7.8 billion people who contributed nothing to the space <:superAngry:843088789349335050>"]
-
-                with io.BytesIO() as image_binary:
-                    im.save(image_binary, 'PNG')
-                    image_binary.seek(0)
-                    picture = discord.File(image_binary, "space.png")
-                    await chan.send(random.choice(msgs))
-                    await chan.send(file=picture)
+                await earth(message=message,channel=chan)
 
             elif resp == 'help':
-                commands = ["1. hello : Know the bot",
-                            "2. apod : Astronomical Picture Of The Day",
-                            "3. mars : NAVCAM picture from planet Mars", 
-                            "4. earth: Become the planet Earth, a 6 septillion kg blue ball",
-                            "5. plot : DM the nearest satellite for a new movie plot",
-                            "6. splash: Generate random photos. Use >splash help to learn more",
-                            "7. travel : Enter 'travel <placeName>' to get an image from there" ]
-                msg = "Hey, heard a SOS! Here's all you need to know: \n Prefix : > \n"
-                for val in commands:
-                    msg += val + '\n'
-                await message.reply(msg)
+                await helper(message=message)
             
             elif resp.startswith('splash'):
-                ids = {'3d':'CDwuwXJAbEw', 'arch':'M8jVbLbTRws','event':'BJJMtteDJA4','exp':'qPYsDzvJOYc','fashion' : 'S4MKLAsBB74', 'food' : 'xjPR4hlkBGA','nature' : '6sMVjTLSkeQ', 'street' : 'xHxYTMHLgOc', 'travel' : 'Fzo3zuOHN6w','rawr':'Jpg6Kidl-Hk'}
-                genreTag = {"3d-renders" : '3d', 'architecture-interior' : 'arch','current-events' : 'event', 'experimental' : 'exp', 'fashion' : 'fashion', 'food-drink' : 'food', 'nature' : 'nature', 'street-photography' : 'street','travel' : 'travel','animals':'rawr'}
-                genreName = {v: k for k, v in genreTag.items()}
-                vals = resp.split()
-                if len(vals) == 1:
-                    response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}'.format(splashKey))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo that got sent in my family satellite group :satellite_orbital:')
-                        await chan.send(vals['urls']['small'])
-                else:
-                    if len(vals) != 2 or vals[1] not in ids:
-                        genreMsg = 'Here are the genres and its tags\n'
-                        for (k,v) in genreTag.items():
-                            genreMsg += k + ' -> ' + v + '\n'
-                        await chan.send("Splash takes only one or two inputs \n If you use '>splash' a random photo will be generated \n If you use '>splash {genreTag}' a particular genre specific photo shall be generated")
-                        await chan.send(genreMsg)
-                    elif vals[1] in ids:
-                        print(vals[1])
-                        response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}&topics={}'.format(splashKey,ids[vals[1]]))
-                        if response.status_code == 200:
-                            supreme = response.json()
-                            await chan.send('Here is a photo of {} that got sent in my family satellite group :satellite_orbital:'.format(genreName[vals[1]]))
-                            await chan.send(supreme['urls']['small'])
+                await splash(resp=resp,channel=chan,splashKey=splashKey)
 
 
             elif resp.startswith('travel'):
@@ -200,7 +123,10 @@ class MyClient(discord.Client):
                 else:
                     await message.reply("A man who is said to be from the ocean stole some of our drives :astronaut:, maybe this unknown place's info was in it <:sadge:886538902352068628>")
 
-
+            elif resp.startswith('cie'):
+                await getCie.getCie(resp,message,chan,True)
+            elif resp.startswith('attendance'):
+                await getCie.getCie(resp,message,chan,False)
             else:
                 await message.reply("Hey! Why'd you call me? Know your place human, I am a busy rocket. Use >help and learn what I do, then hit the blast off button <:superAngry:843088789349335050>")
 
