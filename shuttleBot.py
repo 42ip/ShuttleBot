@@ -1,3 +1,4 @@
+from commands.chegg import chegg
 import discord
 import os
 import requests
@@ -78,7 +79,8 @@ class MyClient(discord.Client):
             elif resp == 'apod':
                 await apod(channel=chan,apiKey=apiKey)
 
-
+            elif resp == "chegg":
+                await chegg(self,message)
             elif resp == 'plot':
                 if found:
                     await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
