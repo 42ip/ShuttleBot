@@ -1,3 +1,4 @@
+import random
 from commands.chegg import chegg
 import discord
 import os
@@ -48,7 +49,13 @@ class MyClient(discord.Client):
     global apiKey
 
     async def on_ready(self):
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Astronaut In The Ocean"))
+        songs = ["Astronaut In The Ocean", "Space Cowboy", "Rocket Man"]
+        movie = ["Interstellar", "The Martian", "The Midnight Sky", "Cosmos"]
+        if random.randint(1,2):
+            await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=random.choice(songs)))
+        else:
+            await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=random.choice(movie)))
+
         print('Logged in as')
         print(self.user.name)
         print(self.user.id)
