@@ -17,6 +17,7 @@ from commands.hello import hello
 from commands.help import help as helper
 from commands.mars import mars
 from commands.splash import splash
+from commands.cat import pussi
 import json
 
 nltk.download('all')
@@ -28,9 +29,7 @@ try:
     files = os.listdir()
     print(files)
 
-
     file_path = 'checkpoint_run1.tar'
-
 
     with tarfile.open(file_path, 'r') as tar:
         tar.extractall()
@@ -46,13 +45,14 @@ apiKey = os.environ.get('apiKey')
 token = os.environ.get('token')
 splashKey = os.environ.get('splashKey')
 
+
 class MyClient(discord.Client):
     global apiKey
 
     async def on_ready(self):
         songs = ["Astronaut In The Ocean", "Space Cowboy", "Rocket Man"]
         movie = ["Interstellar", "The Martian", "The Midnight Sky", "Cosmos"]
-        if random.randint(1,2):
+        if random.randint(1, 2):
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=random.choice(songs)))
         else:
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=random.choice(movie)))
@@ -74,56 +74,56 @@ class MyClient(discord.Client):
         if resp[0] == '>':
             resp = resp[1:].lower()
             if resp == 'hello':
-                await hello(introList=self.possibleIntros,channel=chan)
+                await hello(introList=self.possibleIntros, channel=chan)
 
             elif resp == 'prob':
                 await prob(chan)
 
             elif resp == 'mars':
-                await mars(channel=chan,apiKey=apiKey)
-
+                await mars(channel=chan, apiKey=apiKey)
 
             elif resp == 'apod':
-                await apod(channel=chan,apiKey=apiKey)
+                await apod(channel=chan, apiKey=apiKey)
 
             elif resp == "chegg":
-                await chegg(self,message)
+                await chegg(self, message)
             elif resp == 'plot':
                 if found:
                     await chan.send('Contacting the nearest satellite for a new movie plot <:peepobigbrain:863049707361665024>')
                     text = gpt2.generate(sess, run_name='run1',
-                    length=50,
-                    prefix="<|startoftext|>",
-                    truncate="<|endoftext|>\n",
-                    include_prefix=False,return_as_list = True)
+                                         length=50,
+                                         prefix="<|startoftext|>",
+                                         truncate="<|endoftext|>\n",
+                                         include_prefix=False, return_as_list=True)
                     print(text[0])
                     await chan.send(text[0])
                 else:
                     await chan.send("All the movie satellites are away from me at this moment.")
 
             elif resp.startswith('earth'):
-                await earth(message=message,channel=chan)
+                await earth(message=message, channel=chan)
 
             elif resp == 'help':
                 await helper(message=message)
-            
-            elif resp.startswith('splash'):
-                await splash(resp=resp,channel=chan,splashKey=splashKey)
 
+            elif resp.startswith('splash'):
+                await splash(resp=resp, channel=chan, splashKey=splashKey)
+
+            elif resp.startswith('pussi'):
+                await pussi(message=message, channel=chan)
 
             elif resp.startswith('travel'):
                 cName = resp.split()[1]
                 cName = cName[0].upper() + cName[1:]
                 text = 'I am from ' + cName
-                unsplash(text,chan,message,splashKey)
+                unsplash(text, chan, message, splashKey)
 
             elif resp.startswith('cie'):
-                await getCie.getCie(resp,message,chan,True)
+                await getCie.getCie(resp, message, chan, True)
             elif resp.startswith('attendance'):
-                await getCie.getCie(resp,message,chan,False)
+                await getCie.getCie(resp, message, chan, False)
             else:
                 await message.reply("Hey! Why'd you call me? Know your place human, I am a busy rocket. Use >help and learn what I do, then hit the blast off button <:superAngry:843088789349335050>")
-
 
 
 client = MyClient()
