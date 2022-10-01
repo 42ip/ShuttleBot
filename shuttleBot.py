@@ -9,6 +9,8 @@ import gdown
 import geograpy
 import nltk
 from commands.apod import apod
+from commands.unsplash import unsplash
+from commands.lc import prob
 from commands.earth import earth
 import commands.getCie as getCie
 from commands.hello import hello
@@ -16,7 +18,6 @@ from commands.help import help as helper
 from commands.mars import mars
 from commands.splash import splash
 from commands.cat import pussi
-
 import json
 
 nltk.download('all')
@@ -51,7 +52,7 @@ class MyClient(discord.Client):
     async def on_ready(self):
         songs = ["Astronaut In The Ocean", "Space Cowboy", "Rocket Man"]
         movie = ["Interstellar", "The Martian", "The Midnight Sky", "Cosmos"]
-        if random.randint(1,2):
+        if random.randint(1, 2):
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=random.choice(songs)))
         else:
             await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=random.choice(movie)))
@@ -76,11 +77,7 @@ class MyClient(discord.Client):
                 await hello(introList=self.possibleIntros, channel=chan)
 
             elif resp == 'prob':
-                r = requests.post("https://leetcode.com/graphql",  json={"query": "\n    query questionOfToday {\n  activeDailyCodingChallengeQuestion {\n    date\n    userStatus\n    link\n    question {\n      acRate\n      difficulty\n      freqBar\n      frontendQuestionId: questionFrontendId\n      isFavor\n      paidOnly: isPaidOnly\n      status\n      title\n      titleSlug\n      hasVideoSolution\n      hasSolution\n      topicTags {\n        name\n        id\n        slug\n      }\n    }\n  }\n}\n    "})
-                link = "https://leetcode.com" + \
-                    json.loads(r.text)[
-                        "data"]["activeDailyCodingChallengeQuestion"]["link"]
-                await chan.send("Here is a question for you to solve from Leetcode! \n" + link)
+                await prob(chan)
 
             elif resp == 'mars':
                 await mars(channel=chan, apiKey=apiKey)
@@ -106,47 +103,20 @@ class MyClient(discord.Client):
             elif resp.startswith('earth'):
                 await earth(message=message, channel=chan)
 
-            elif resp.startswith('pussi'):
-                await pussi(message=message, channel=chan)
-
             elif resp == 'help':
                 await helper(message=message)
 
             elif resp.startswith('splash'):
                 await splash(resp=resp, channel=chan, splashKey=splashKey)
 
+            elif resp.startswith('pussi'):
+                await pussi(message=message, channel=chan)
+
             elif resp.startswith('travel'):
                 cName = resp.split()[1]
                 cName = cName[0].upper() + cName[1:]
                 text = 'I am from ' + cName
-                placeName = geograpy.get_place_context(text=text)
-
-                if len(placeName.cities) > 0:
-                    response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey, placeName.cities[0]))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo from {} for you :wink:'.format(placeName.cities[0]))
-                        await chan.send(vals['urls']['small'])
-
-                elif len(placeName.countries) > 0:
-                    response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey, placeName.countries[0]))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo from {} for you :wink:'.format(placeName.countries[0]))
-                        await chan.send(vals['urls']['small'])
-
-                elif len(placeName.regions) > 0:
-                    response = requests.get(
-                        'https://api.unsplash.com/photos/random/?client_id={}&query={}'.format(splashKey, placeName.regions[0]))
-                    if response.status_code == 200:
-                        vals = response.json()
-                        await chan.send('Here is a photo from the country {} for you :wink:'.format(placeName.regions[0]))
-                        await chan.send(vals['urls']['small'])
-
-                else:
-                    await message.reply("A man who is said to be from the ocean stole some of our drives :astronaut:, maybe this unknown place's info was in it <:sadge:886538902352068628>")
+                unsplash(text, chan, message, splashKey)
 
             elif resp.startswith('cie'):
                 await getCie.getCie(resp, message, chan, True)
