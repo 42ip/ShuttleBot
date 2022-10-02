@@ -1,4 +1,5 @@
 import random
+from commands.livestock import buffalo
 from commands.chegg import chegg
 import discord
 import os
@@ -108,6 +109,8 @@ class MyClient(discord.Client):
 
             elif resp.startswith('splash'):
                 await splash(resp=resp, channel=chan, splashKey=splashKey)
+            elif resp.startswith('livestock'):
+                await livestock(message=message,channel=chan)
 
             elif resp.startswith('pussi'):
                 await pussi(message=message, channel=chan)
