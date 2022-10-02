@@ -11,7 +11,9 @@ async def help(message):
                 ("travel", "Enter 'travel <placeName>' to get an image from there"),
                 ("cie", "Get all your exam details DM'd to you"),
                 ("attendance", "Get all your attendance details DM'd to you"),
-                ("pussi", "Use 'pussi <caption>' to get a random cat pic with a caption")
+                ("pussi", "Use 'pussi <caption>' to get a random cat pic with a caption"),
+                ("livestock", "Use 'livestock' to get information about Karnataka's livestock!!!!!! wowowowo")
+
                 ]
     embed = discord.Embed(title="Shuttle has arrived to help",
                           description="I can run any of the below commands", color=0x00ffff)
